@@ -12,6 +12,8 @@ public static class DependencyInjection
     public static IServiceCollection AddTest1CoreServices(this IServiceCollection services)
     {
         services.AddTransient<IUserService, UserService>();
+
+        
         return services;
     }
 }

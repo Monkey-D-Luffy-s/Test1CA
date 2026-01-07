@@ -3,6 +3,7 @@ using Test1Core;
 using Test1Infrastructure;
 using Serilog;
 using Test1CA.Middlewares;
+using Test1Core.Mappers;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog();
 
-
+builder.Services.AddAutoMapper(typeof(UserMapper).Assembly);
 // Add services to the container.
 builder.Services.AddTest1CoreServices();
 builder.Services.AddTest1InfrastructureServices();

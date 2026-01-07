@@ -1,5 +1,7 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using System.Text;
 using Test1Core.DomainModels;
 using Test1Core.DomainModels.Dtos;
@@ -11,9 +13,11 @@ namespace Test1Core.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepo;
-    public UserService(IUserRepository userRepo)
+    private readonly IMapper _mapper;
+    public UserService(IUserRepository userRepo, IMapper mapper)
     {
         _userRepo = userRepo;
+        _mapper = mapper;
     }
     public async Task<AuthenticationResponse?> LoginUser(LoginRequestDto loginRequest)
     {
@@ -22,23 +26,17 @@ public class UserService : IUserService
         ApplicationUser user = await _userRepo.GetUserByEmailAndPassword(loginRequest.Email, loginRequest.Password);
         if (user == null)
         { return null; }
-        return new AuthenticationResponse(user.UserId, user.UserName, user.Email, user.Role, "Token", true);
-
+         
+        return _mapper.Map<AuthenticationResponse>(user) with { Token = "Token", Status = true};
     }
 
     public async Task<AuthenticationResponse?> RegisterUser(RegisterRequestDto registerRequest)
     {
-        ApplicationUser newUser = new ApplicationUser()
-        {
-            UserName = registerRequest.UserName,
-            Email = registerRequest.Email,
-            Password = registerRequest.Password,
-            Role = registerRequest.Role,
-        };
+        ApplicationUser newUser = _mapper.Map<ApplicationUser>(registerRequest);
         ApplicationUser user = await _userRepo.AddUser(newUser);
         if(user == null)  { return null; }
+        return _mapper.Map<AuthenticationResponse>(user) with { Token = "Token", Status = true };
 
-        return new AuthenticationResponse(user.UserId, user.UserName, user.Email, user.Role, "Token", true);
     }
 }
 
