@@ -1,9 +1,14 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
-using Test1Core;
-using Test1Infrastructure;
 using Serilog;
 using Test1CA.Middlewares;
+using Test1Core;
+using Test1Core.DomainModels.Dtos;
 using Test1Core.Mappers;
+using Test1Core.Validators;
+using Test1Infrastructure;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +23,7 @@ builder.Services.AddAutoMapper(typeof(UserMapper).Assembly);
 builder.Services.AddTest1CoreServices();
 builder.Services.AddTest1InfrastructureServices();
 
+builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
